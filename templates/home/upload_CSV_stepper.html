@@ -1,0 +1,545 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{#{% block title %} Slides {% endblock %}#}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block extra_css %}
+    <link href="{% static 'libs/dropzone/dist/min/dropzone.min.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <!-- Sweet Alert-->
+    <link href="{% static 'libs/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+{% endblock %}
+
+
+{% block head_scripts %}
+
+    <script type="application/javascript">
+        function showToastMessage(title, message, redirect_path) {
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: "success",
+                confirmButtonText: "Ok",
+                confirmButtonClass: "btn btn-success mt-2",
+                buttonsStyling: !1
+            }).then(function (t) {
+                window.open(redirect_path, "_self");
+            })
+        }
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="upload_content_div"
+         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+{#        <p class="h4">3 steps to process your data.</p>#}
+        <div class="d-block mb-4 mb-md-0">
+            <p class="mb-0">3 steps to process your data.</p>
+        </div>
+
+    </div>
+    <div class="uploadFormBody">
+        <div class="card">
+            <div class="card-body">
+                {#                <h4 class="card-title mb-4">Basic Wizard</h4>#}
+                <div id="basic-example">
+
+                    <h3>Upload File</h3>
+                    <section>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+
+                                            {#                                            <h4 class="card-title">Dropzone</h4>#}
+                                            <div>
+                                                <form id="form-0" name="upload_csv_form" method="post" action=""
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                                                       <div class="mt-3 px-4 mb-3">
+                                                        <label for="formFile" class="form-label">Upload Your Csv Here</label>
+                                                        <input class="form-control" name="csv_file" id="csv_file" type="file" accept=".csv">
+                                                    </div>
+{#                                                <div class="fallback">#}
+{#                                                    <input name="csv_file" id="csv_file" type="file" accept=".csv" multiple="multiple">#}
+{#                                                </div>#}
+{#                                                <div class="dz-message needsclick">#}
+{#                                                    <div class="mb-3">#}
+{#                                                        <i class="display-4 text-muted bx bxs-cloud-upload"></i>#}
+{#                                                    </div>#}
+{##}
+{#                                                    <h4>Click "Choose File" to upload.</h4>#}
+{#                                                </div>#}
+                                                <input type="hidden" value=1 name="step">
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </section>
+                    <!-- Preview Data -->
+                    <h3>Preview Data</h3>
+                    <section>
+                        <div class="d-flex flex-row justify-content-evenly align-items-center">
+                            <div>
+                                <h6>You can also apply sort filters on the Data</h6>
+                            </div>
+                            <div>
+                                <!-- Static Backdrop modal Button -->
+                                <button type="button" class="btn btn-primary waves-effect waves-light"
+                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    Sorting <i class="bx bx-sort"></i>
+                                </button>
+                                <!-- Static Backdrop Modal -->
+                                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                     data-bs-keyboard="false" tabindex="-1" role="dialog"
+                                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary ">
+                                                <h5 class="modal-title text-white" id="staticBackdropLabel">Sorting
+                                                    Filter</h5>
+                                                <button type="button" class="btn-close text-white"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="card  ">
+                                                    <div id="main"
+                                                         class="w-100 d-flex flex-row justify-content-around align-items-center mb-4 mt-4">
+                                                        <div class="btn-group btn-group-example mb-3 " role="group">
+                                                            <button type="button" id="btAdd"
+                                                                    class="btn btn-success   w-md"><i
+                                                                    class="dripicons-plus"></i></button>
+                                                            <button type="button" id="btRemove"
+                                                                    class="btn btn-danger  w-md"><i
+                                                                    class="dripicons-minus"></i></button>
+                                                        </div>
+
+                                                    </div>
+                                                    <form id="modal-form" name="upload_csv_form" method="post" action=""
+                                                          enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <div class="parent">
+                                                            <div id="selectMore"
+                                                                 class="d-flex flex-row justify-content-center align-items-center">
+                                                                <div class="m-2">
+                                                                    <div class="mb-3 row">
+
+                                                                        <div class="col-md-12">
+                                                                            <select class="form-select"
+                                                                                    id="sorting_0" name="sorting_0">
+                                                                                <option value="" disabled="disabled"
+                                                                                        selected="selected">
+                                                                                    Select option
+                                                                                </option>
+
+                                                                                {% for header in df.columns %}
+                                                                                    <option value="{{ header }}">{{ header }}</option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+                                                                <div class="m-2">
+                                                                    <div class="mb-3 row">
+
+                                                                        <div class="col-md-12">
+                                                                            <select class="form-select "
+                                                                                    id="order_0" name="order_0">
+                                                                                <option value="" disabled="disabled"
+                                                                                        selected="selected">
+                                                                                    Sort By
+                                                                                </option>
+                                                                                <option value="Ascending">Ascending
+                                                                                </option>
+                                                                                <option value="Descending">
+                                                                                    Descending
+                                                                                </option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" value=2 name="step">
+                                                        <input type="hidden" value=1 name="modal_sort">
+                                                        <input type="hidden" value="{{ temp_file_path }}"
+                                                               name="temp_file_path">
+                                                        <input type="hidden" value="{{ temp_file_name }}"
+                                                               name="temp_file_name">
+                                                        <input type="hidden" value="{{ original_file_name }}"
+                                                               name="original_file_name">
+
+                                                        <div class="modal-footer justify-content-center align-items-center">
+                                                            <button type="submit" class="btn btn-primary">Apply
+                                                            </button>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Data Preview</h4>
+                                        <table id="datatable"
+                                               class="table table-bordered dt-responsive  nowrap w-100"
+                                               data-ordering="false">
+                                            <thead>
+                                            <tr>
+                                                {% if not df.empty %}
+                                                    {% for header in df.columns %}
+                                                        <th data-orderable="false">{{ header }}</th>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <th data-orderable="false">Sr</th>
+                                                {% endif %}
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for index, row in df.iterrows %}
+                                                <tr>
+                                                    {% for cell in row %}
+                                                        <td>
+                                                            {{ cell|truncatechars:40 }}
+                                                        </td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                        <form id="form-1" name="upload_csv_form" method="post" action=""
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <input type="hidden" value=2 name="step">
+                                            <input type="hidden" value=1 name="save_sorting">
+                                            <input type="hidden" value="{{ temp_file_path }}" name="temp_file_path">
+                                            <input type="hidden" value="{{ original_file_name }}"
+                                                   name="original_file_name">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Placeholder Mapping -->
+                    <h3>Placeholder Mapping</h3>
+                    <section>
+                        <form id="form-2" name="upload_csv_form" method="post" action=""
+                              enctype="multipart/form-data"
+                              class="w-100 d-flex flex-column justify-content-center align-items-center">
+                            {% csrf_token %}
+                            <div class="w-50 row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label>Placeholder 1</label>
+                                        <select class="form-select" name="placeholder_1" id="placeholder_1">
+                                         <option  selected disabled hidden>Default Value</option>
+                                            {% for header in columns %}
+                                                {% if not header|first in 'Unnamed' %}
+                                                    <option value="{{ header }}">{{ header }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-50 row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label>Placeholder 2</label>
+                                        <select class="form-select" name="placeholder_2" id="placeholder_2">
+                                        <option  selected disabled hidden>Default Value</option>
+                                            {% for header in columns %}
+                                                {% if not header|first in 'Unnamed' %}
+                                                    <option value="{{ header }}">{{ header }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="w-50 row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label>Placeholder 3</label>
+                                        <select class="form-select" name="placeholder_3" id="placeholder_3">
+                                        <option  selected disabled hidden>Default Value</option>
+                                            {% for header in columns %}
+                                                {% if not header|first in 'Unnamed' %}
+                                                    <option value="{{ header }}">{{ header }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-50 row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label>Placeholder 4</label>
+                                        <select class="form-select" name="placeholder_4" id="placeholder_4">
+                                        <option  selected disabled hidden>Default Value</option>
+                                            {% for header in columns %}
+                                                {% if not header|first in 'Unnamed' %}
+                                                    <option value="{{ header }}">{{ header }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-50 row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label>Image Placeholder</label>
+                                        <select class="form-select" name="image_placeholder" id="image_placeholder">
+                                        <option  selected disabled hidden>Default Value</option>
+                                            {% for header in columns %}
+                                                {% if not header|first in 'Unnamed' %}
+                                                    <option value="{{ header }}">{{ header }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-50 row">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label>Audio Placeholder</label>
+                                        <select class="form-select" name="audio_placeholder" id="audio_placeholder">
+                                        <option  selected disabled hidden>Default Value</option>
+                                            {% for header in columns %}
+                                                {% if not header|first in 'Unnamed' %}
+                                                    <option value="{{ header }}">{{ header }}</option>
+                                                {% endif %}
+
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <input type="hidden" value=3 name="step">
+                            <input type="hidden" value="{{ temp_file_path }}" name="temp_file_path">
+                            <input type="hidden" value="{{ temp_file_name }}" name="temp_file_name">
+                            <input type="hidden" value="{{ original_file_name }}" name="original_file_name">
+
+
+                            {#                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 40px">#}
+                            {#                                <input class="btn btn-warning "#}
+                            {#                                       type="submit">#}
+                            {#                            </div>#}
+
+                            <input id="wizard-step" value="{{ step }}" type="hidden">
+                            <input id="wizard-step-submitted" value=-1 type="hidden">
+                            <input id="wizard-step-submitted-index" value=-1 type="hidden">
+                        </form>
+
+                    </section>
+
+                    {#                    <!-- Confirm Details -->#}
+                    {#                    <h3>Confirm Detail</h3>#}
+                    {#                    <section>#}
+                    {#                        <div class="row justify-content-center">#}
+                    {#                            <div class="col-lg-6">#}
+                    {#                                <div class="text-center">#}
+                    {#                                    <div class="mb-4">#}
+                    {#                                        <i class="mdi mdi-check-circle-outline text-success display-4"></i>#}
+                    {#                                    </div>#}
+                    {#                                    <div>#}
+                    {#                                        <h5>Confirm Detail</h5>#}
+                    {#                                        <p class="text-muted">If several languages coalesce, the grammar of the#}
+                    {#                                            resulting</p>#}
+                    {#                                    </div>#}
+                    {#                                </div>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </section>#}
+                </div>
+
+            </div>
+            <!-- end card body -->
+        </div>
+
+    </div>
+
+    {% if messages %}
+        {% for message in messages|slice:":1" %}
+            <script>
+                showToastMessage("Processing", '{{ message }}', "/csv_listing")
+            </script>
+        {% endfor %}
+    {% endif %}
+    {##}
+    {#    <div class="col-xl-3 col-lg-4 col-sm-6 mb-2">#}
+    {#        <div class="p-3">#}
+    {#            <p>A success message!</p>#}
+    {#            <button type="button" class="btn btn-primary waves-effect waves-light" onclick="showToastMessage()">Click me</button>#}
+    {#        </div>#}
+    {#    </div>#}
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+
+    <!-- jquery step -->
+    <script src="{% static 'libs/jquery-steps/build/jquery.steps.min.js' %}"></script>
+
+    <!-- Drop Zone -->
+    <script src="{% static 'libs/dropzone/dist/min/dropzone.min.js' %}"></script>
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <!-- Sweet Alerts js -->
+
+    <!-- Sweet alert init js-->
+    {#    <script src="{% static 'js/pages/sweet-alerts.init.js' %}"></script>#}
+
+    <!-- Bootstrap Toasts Js -->
+    {#    <script src="{% static 'js/pages/bootstrap-toastr.init.js' %}"></script>#}
+    <!-- Sweet alert init js-->
+    {#        <script src="{% static 'js/pages/sweet-alerts.init.js' %}"></script>#}
+
+    <!-- Datatable init js -->
+    {#    <script src="{% static 'js/pages/datatables.init.js' %}"></script>#}
+    <!-- form wizard init -->
+    {#    <script src="{% static 'js/pages/form-wizard.init.js' %}"></script>#}
+
+    <!-- Multiple Div ads Through this  -->
+
+    <script>
+
+        $(document).ready(function () {
+            console.log("DOCUMENT READY IN JQUERY !")
+            var id = 0;
+            var max = 10;
+            var step = document.getElementById("wizard-step").value
+
+            stepWizard = $("#basic-example").steps({
+                headerTag: "h3",
+                bodyTag: "section",
+                transitionEffect: "slide",
+                forceMoveForward: true,
+                startIndex: {{ step }} -1,
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    {#alert('called'+ currentIndex +  " new index: "+ newIndex)#}
+                    var formID = "form-" + currentIndex
+                    dataForm = document.getElementById(formID)
+                    wizardStepSubmittedIndex = document.getElementById("wizard-step-submitted-index").value
+                    dataForm.submit()
+                    //This will move to next step.
+                    $("#basic-example").steps("next");
+                },
+                onFinishing: function (event, currentIndex) {
+                    document.getElementById("form-2").submit()
+                    {#showToastMessage()#}
+                    {#$("#liveToastBtn").style("display:block")#}
+                    {#                    #}
+
+                    {#                    #}
+                }
+            });
+
+            $(function () {
+                if (step === "2") {
+                    datatable = $('#datatable').dataTable({
+                        "sort": false,
+                        "language": {
+                            "emptyTable": "No Data To Preview"
+                        }
+                    });
+                }
+            });
+
+
+            $(function () {
+                var current_index = stepWizard.steps('getCurrentIndex') + 1
+                console.log("Current Index: ", current_index)
+                console.log("STEP: ", step)
+                if (step < current_index) {
+                    stepWizard.steps("previous");
+                }
+                if (step > current_index) {
+                    stepWizard.steps("next");
+                }
+
+
+            })
+
+
+            $(function () {
+                $('#btAdd').click(function (e) {
+                    console.log("JQUERY CALLED")
+                    id++;
+
+                    $("#selectMore").first().clone().removeAttr('id').attr('id', `selectMore` + id).attr('data-id', id).appendTo(".parent")
+                    $(`#selectMore` + id).find('#sorting_0').removeAttr("value").removeAttr("id").attr('id', `sorting_` + id).removeAttr("name").attr('name', `sorting_` + id)
+                    $(`#selectMore` + id).find('#order_0').removeAttr("value").removeAttr("id").attr('id', `order_` + id).removeAttr("name").attr('name', `order_` + id)
+
+                });
+                $('#btRemove').click(function (e) {
+                    $('div[data-id="' + id + '"]').remove();
+                    id--;
+                });
+                $('#btRemoveAll').click(function (e) {
+
+                    for (var x = 0; x <= id; x++) {
+                        $('div[data-id="' + x + '"]').remove();
+
+                    }
+                    id = 0;
+                });
+
+
+            });
+
+
+        })
+        ;
+
+    </script>
+
+
+{% endblock %}

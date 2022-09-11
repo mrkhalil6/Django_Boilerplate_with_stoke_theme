@@ -1,0 +1,383 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %} Slides {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block extra_css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet"
+          type="text/css"/>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+    <div>
+
+        <!-- Static Backdrop modal Button -->
+
+        <form id="form-0" name="organization_listing" method="post" action=""
+              enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Static Backdrop Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                 tabindex="-1"
+                 role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+
+                            <h3 class="modal-title text-center" id="staticBackdropLabel">Add New Organization</h3>
+                            <div class="py-2">
+                                <label class="form-label text-dark">Organization Name</label>
+                                <input class="form-control" type="text"
+                                       placeholder="Input organization name" name="organization_name"
+                                       id="full_name" required>
+                                <input type="hidden" name="action" value="add-organization">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-12">
+        <div class="card rounded overflow-hidden">
+            <div class="card-body rounded overflow-hidden">
+                <div class="d-flex justify-content-between align-items-center my-4">
+                    <h5>Add New Organization</h5>
+                    <button type="button"
+                            class="btn btn-dark waves-effect waves-light fw-semibold " data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
+                        <i class="mdi mdi-plus-circle-outline font-size-20 align-middle me-1"></i> Add New Organization
+                    </button>
+                </div>
+
+                <table id="datatable"
+                       class="table table-bordered dt-responsive  nowrap w-100 rounded overflow-hidden">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Organizations Name</th>
+                        <th>Created Date</th>
+                        <th>Users</th>
+                        <th>Status</th>
+                        <th class=" text-center">Action</th>
+
+                    </tr>
+                    </thead>
+
+
+                    <tbody>
+                    {% for data in context %}
+                        <tr>
+                            <td class="font-size-14 fw-bold">{{ data.org_id }}</td>
+                            <td class="font-size-14 fw-bold">{{ data.name }}</td>
+                            <td>{{ data.created_date }}</td>
+                            <td>
+                                <a href="/accounts_listing?organization={{ data.org_id }}&&organization_name={{ data.name }}">{{ data.users_count }}</a>
+                            </td>
+                            <td class="text-capitalize">{{ data.status }}</td>
+                            <td class=" text-center">
+                                <div class="btn-group dropstart">
+
+                                    <i class="mdi mdi-dots-horizontal dropdown-toggle waves-effect waves-light"
+                                       data-bs-toggle="dropdown" aria-expanded="false"></i>
+                                    <div class="dropdown-menu z-999">
+                                        <p class="dropdown-item m-0" style="cursor: pointer" data-bs-toggle="modal"
+                                           data-bs-target="#add-modal-{{ data.org_id }}">Add User</p>
+                                        <p class="dropdown-item m-0" style="cursor: pointer" data-bs-toggle="modal"
+                                           data-bs-target="#modal-{{ data.org_id }}">Edit</p>
+                                        {% if data.status == "active" %}
+                                            <p class="dropdown-item text-danger m-0 " style="cursor: pointer"
+                                               data-bs-toggle="modal" data-bs-target="#delete-modal-{{ data.org_id }}">
+                                                Remove</p>
+                                        {% else %}
+                                            <p class="dropdown-item text-danger m-0 " style="cursor: pointer"
+                                               data-bs-toggle="modal" data-bs-target="#activate-modal-{{ data.org_id }}">
+                                                Active</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        <div class="modal fade " id="add-modal-{{ data.org_id }}" tabindex="-1" role="dialog"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered ">
+                                <div class="modal-content p-4 w-75 ">
+
+                                    <div>
+                                        <h4 class="fw-bold">Add New user</h4>
+                                        <p class="text-gray-100">
+                                            by adding a new user you are giving them permission to make changes.
+                                        </p>
+                                        {#                                            <h6 class="text-primary fw-bolder"> Read Carefully</h6>#}
+
+                                    </div>
+
+
+                                    <div class="modal-body ">
+                                        <form id="form-0" name="organization_listing" method="post" action=""
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div>
+                                                <div class="d-flex justify-content-between border border-3   rounded align-items-center px-2 py-1">
+                                                    <h5 class="fw-bolder m-0">{{ data.name }} </h5>
+                                                    <i class="mdi mdi-checkbox-marked-circle fs-3 text-success"></i>
+                                                </div>
+                                                <div class="py-2">
+                                                    <label class="form-label text-primary">FULL NAME</label>
+                                                    <input class="form-control " type="text"
+                                                           placeholder="Input Full Name" name="full_name"
+                                                           id="full_name" required>
+                                                </div>
+                                                <div class="py-2">
+                                                    <label class="form-label text-primary">Email</label>
+                                                    <input class="form-control " type="email"
+                                                           placeholder="Input Email" name="email" id="email"
+                                                           required>
+                                                </div>
+                                                {#                                                    <div class="form-check form-check-primary mb-3 py-1">#}
+                                                {#                                                        <input class="form-check-input" type="checkbox"#}
+                                                {#                                                               id="formCheckcolor1"#}
+                                                {#                                                                required>#}
+                                                {#                                                        <label class="form-check-label" for="formCheckcolor1">#}
+                                                {#                                                            I grant permission#}
+                                                {#                                                        </label>#}
+                                                {#                                                    </div>#}
+                                                <input type="hidden" name="organization_id"
+                                                       value="{{ data.org_id }}">
+                                                <input type="hidden" name="organization_name"
+                                                       value="{{ data.name }}">
+                                                <input type="hidden" name="action" value="add-user">
+                                                <button class="w-100 btn btn-primary mt-2"
+                                                        id="form_button"
+                                                >Add User
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end add user -->
+                        <div class="modal fade " id="delete-modal-{{ data.org_id }}" tabindex="-1" role="dialog"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered ">
+                                <div class="modal-content p-4 w-75 ">
+
+                                    <div>
+                                        <h3>Delete {{ data.name }}</h3>
+                                        <p class="text-gray-100">
+                                            You are going to delete it permanently.
+                                        </p>
+                                        {#                                                    <h6 class="text-primary fw-bolder"> Read Carefully</h6>#}
+
+                                    </div>
+
+
+                                    <div class="modal-body ">
+                                        <form id="form-0" name="organization_listing" method="post" action=""
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div>
+                                                <input type="hidden" name="organization_id"
+                                                       value="{{ data.org_id }}">
+                                                <input type="hidden" name="organization_name"
+                                                       value="{{ data.name }}">
+                                                <input type="hidden" name="action" value="delete_organization">
+                                                <div class="row ">
+                                                    <p class="w-100 btn col-lg-3" data-bs-dismiss="modal">Cancel</p>
+                                                    <button class="w-100 btn btn-primary col-lg-3"
+                                                            id="form_button">Confirm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end delete Organization -->
+
+                        <!-- end add user -->
+                        <div class="modal fade " id="activate-modal-{{ data.org_id }}" tabindex="-1" role="dialog"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered ">
+                                <div class="modal-content p-4 w-75 ">
+
+                                    <div>
+                                        <h3>Reactivate {{ data.name }}?</h3>
+                                        <p class="text-gray-100">
+                                            You are going to re-activate it permanently.
+                                        </p>
+                                        {#                                                    <h6 class="text-primary fw-bolder"> Read Carefully</h6>#}
+
+                                    </div>
+
+
+                                    <div class="modal-body ">
+                                        <form id="form-0" name="organization_listing" method="post" action=""
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div>
+                                                <input type="hidden" name="organization_id"
+                                                       value="{{ data.org_id }}">
+                                                <input type="hidden" name="organization_name"
+                                                       value="{{ data.name }}">
+                                                <input type="hidden" name="action" value="activate_organization">
+                                                <div class="row ">
+                                                    <p class="w-100 btn col-lg-3" data-bs-dismiss="modal">Cancel</p>
+                                                    <button class="w-100 btn btn-primary col-lg-3"
+                                                            id="form_button">Confirm
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end delete user -->
+
+                        <div class="modal fade " id="modal-{{ data.org_id }}" tabindex="-1" role="dialog"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered ">
+                                <div class="modal-content p-4 w-75 ">
+
+                                    <div>
+                                        <h4 class="fw-bold">Edit Organizations</h4>
+                                        <p class="text-gray-100">
+                                            You can change the name of organization.
+                                        </p>
+                                        {#                                            <h6 class="text-primary fw-bolder"> Read Carefully</h6>#}
+
+                                    </div>
+
+
+                                    <div class="modal-body ">
+                                        <form id="form-0" name="organization_listing" method="post" action=""
+                                              enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div>
+                                                <div class="d-flex justify-content-between border border-3   rounded align-items-center px-2 py-1">
+                                                    <h5 class="fw-bolder m-0">{{ data.name }} </h5>
+                                                    <i class="mdi mdi-checkbox-marked-circle fs-3 text-success"></i>
+                                                </div>
+                                                <div class="py-2">
+                                                    <label class="form-label text-primary">Organization Name</label>
+                                                    <input class="form-control " type="text"
+                                                           name="update_name" value="{{ data.name }} "
+                                                           id="update_name" required>
+                                                </div>
+                                                <input type="hidden" name="organization_id"
+                                                       value="{{ data.org_id }}">
+                                                <input type="hidden" name="organization_name"
+                                                       value="{{ data.name }}">
+                                                <input type="hidden" name="action" value="update_organization_name">
+                                                <button class="w-100 btn btn-primary"
+                                                        id="form_button"
+                                                >Update
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end update organization -->
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+
+    <div class="col-lg-6">
+
+        {% if messages %}
+            {% for message in messages|slice:":1" %}
+
+                <div class="modal fade show" style="display: block ; background-color: rgba(0,0,0,.5)" id="secondmodal"
+                     aria-hidden="true" aria-labelledby="..." tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content p-4 text-center">
+                            {% if message.tags == "error" %}
+
+                                <div class="d-flex flex-column justify-content-center align-items-center">
+                                    <i class="mdi mdi-close-circle  text-danger m-0 p-0" style="font-size: 150px"></i>
+                                    <h2 class="fw-bold " style="margin-top: -20px">Failed</h2>
+                                    <p class="fw-semibold mb-4">{{ message }}</p>
+                                    <button class="btn btn-primary w-75" onclick="hideModel()">Try
+                                        Again
+                                    </button>
+                                </div>
+                            {% else %}
+                                <div class="d-flex flex-column justify-content-center align-items-center">
+
+                                    <i class="mdi mdi-checkbox-marked-circle  text-success m-0"
+                                       style="font-size: 150px"></i>
+                                    <h2 class="fw-bold " style="margin-top: -20px">Success</h2>
+                                    <p class="fw-semibold mb-4">{{ message }}</p>
+                                    <button class="btn btn-primary w-75" onclick="hideModel()">
+                                        Done
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+
+{% block extra_javascript %}
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Buttons examples -->
+    <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'libs/jszip/dist/jszip.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <!-- Datatable init js -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+    <script>
+        function hideModel() {
+            window.location.href = window.location.href
+            document.getElementById('secondmodal').style.display = "none";
+
+        }
+    </script>
+{% endblock %}

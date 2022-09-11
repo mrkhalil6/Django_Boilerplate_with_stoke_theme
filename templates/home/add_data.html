@@ -1,0 +1,172 @@
+{% extends "partials/base.html" %}
+
+{% block title %} Tables {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="row py-4">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Add Student Data</h4>
+                        <form id="form-0" name="add_data" method="post" action=""
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="placeholder_one" class="form-label">Placeholder 1</label>
+                                        <input type="text" class="form-control" name="placeholder_one"
+                                               id="placeholder_one" placeholder="Enter Your Placeholder 1">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="placeholder_two" class="form-label">Placeholder 2</label>
+                                        <input type="text" class="form-control" name="placeholder_two"
+                                               id="placeholder_two" placeholder="Enter Your Placeholder 2">
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="placeholder_three" class="form-label">Placeholder 3</label>
+                                        <input type="text" class="form-control" name="placeholder_three"
+                                               id="placeholder_three" placeholder="Enter Your Placeholder 3">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="placeholder_four" class="form-label">Placeholder 4</label>
+                                        <input type="text" class="form-control" name="placeholder_four"
+                                               id="placeholder_four" placeholder="Enter Your Placeholder 4">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-lg-8">
+                                    <div class="mb-3">
+                                        <label for="formFile" class="form-label">Image</label>
+                                        <input class="form-control" type="file"
+                                               id="image_value"
+                                               accept=".png, .jpg, .jpeg"
+                                               name="image_value"
+                                               onchange="encodeImageFileAsURL(this);">
+                                        <input type="hidden" name="image_placeholder" id="image_placeholder">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="mb-3">
+                                        <label for="formrow-inputState" class="form-label">Csv</label>
+                                        <select id="csv_file"
+                                                class="form-select"
+                                                name="csv_file">
+                                            {% for val in data %}
+                                                <option id="{{ val.id }}" value="{{ val.id }}"
+                                                >
+                                                    {{ val.file_name }}
+                                                </option>
+
+                                            {% endfor %}
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div>
+                                <button type="submit" class="btn btn-primary w-md">Submit</button>
+                            </div>
+                        </form>
+                        <div class="col-lg-6">
+
+                            {% if messages %}
+                                {% for message in messages|slice:":1" %}
+
+                                    <div class="modal fade show"
+                                         style="display: block ; background-color: rgba(0,0,0,.5)" id="secondmodal"
+                                         aria-hidden="true" aria-labelledby="..." tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content p-4 text-center">
+                                                {% if message.tags == "error" %}
+
+                                                    <div class="d-flex flex-column justify-content-center align-items-center">
+                                                        <i class="mdi mdi-close-circle  text-danger m-0 p-0"
+                                                           style="font-size: 150px"></i>
+                                                        <h2 class="fw-bold " style="margin-top: -20px">Failed</h2>
+                                                        <p class="fw-semibold mb-4">{{ message }}</p>
+                                                        <button class="btn btn-primary w-75" onclick="hideModel()">Try
+                                                            Again
+                                                        </button>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="d-flex flex-column justify-content-center align-items-center">
+
+                                                        <i class="mdi mdi-checkbox-marked-circle  text-success m-0"
+                                                           style="font-size: 150px"></i>
+                                                        <h2 class="fw-bold " style="margin-top: -20px">Success</h2>
+                                                        <p class="fw-semibold mb-4">{{ message }}</p>
+                                                        <button class="btn btn-primary w-75" onclick="hideModel()">
+                                                            Done
+                                                        </button>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- end card body -->
+                </div>
+                <!-- end card -->
+            </div>
+
+        </div>
+    </div>
+
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block extra_javascript %}
+    <script>
+        function encodeImageFileAsURL(element) {
+            var file = element.files[0];
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                document.getElementById("image_placeholder").value = reader.result
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function changecsv(font, divId) {
+            document.getElementById(
+                divId).style.fontFamily
+                = font.value;
+        }
+    </script>
+    <script>
+        function hideModel() {
+            window.location.href = window.location.href
+            document.getElementById('secondmodal').style.display = "none";
+
+        }
+    </script>
+
+{% endblock extra_javascript %}
