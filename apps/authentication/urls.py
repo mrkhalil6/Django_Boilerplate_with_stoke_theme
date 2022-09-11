@@ -8,6 +8,7 @@ from .views import login_view, register_user, reset_password, change_password, e
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
+    
     path('login/', login_view, name="login"),
     path('reset_password/', reset_password, name="reset_password"),
     path('change_password/', change_password, name="change_password"),

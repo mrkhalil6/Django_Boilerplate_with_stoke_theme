@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from ThreePLDashboard import secrets
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
@@ -86,8 +87,8 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'ThreePLDashboard.context_processors.check_super_admin',
-                'ThreePLDashboard.context_processors.organizations_data'
+                # 'ThreePLDashboard.context_processors.check_super_admin',
+                # 'ThreePLDashboard.context_processors.organizations_data'
             ],
         },
     },
@@ -100,16 +101,7 @@ AUTH_USER_MODEL = 'authentication.User'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'threepldashboard',
-        'USER': 'threepluser',
-        'PASSWORD': 'threeplpassword',
-        'HOST': '127.0.0.1',
-        'PORT': '',
-    }
-}
+DATABASES = secrets.DATABASES
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -154,14 +146,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'media')
 
-AUTHENTICATION_BACKENDS = [
-
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
 
 ACCOUNT_FORMS = {
     'login': 'pages.forms.UserLoginForm',
@@ -174,7 +158,7 @@ ACCOUNT_FORMS = {
 
 
 # login url
-LOGIN_URL = 'account_login'
+LOGIN_URL = 'login'
 SITE_ID = 2
 # ACCOUNT_SIGNUP_REDIRECT_URL = "account_logout"
 ACCOUNT_LOGOUT_ON_GET = True

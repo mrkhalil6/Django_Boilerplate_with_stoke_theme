@@ -69,7 +69,7 @@ def register_user(request):
     else:
         form = SignUpForm()
 
-    return render(request, "accounts/register.html", {"form": form, "msg": msg, "success": success})
+    return render(request, "../../templates/accounts/register.html", {"form": form, "msg": msg, "success": success})
 
 
 def reset_password(request):
@@ -86,7 +86,7 @@ def reset_password(request):
             # name = user.get_full_name()
             try:
                 server_url = secrets.SERVER_URL
-                html_template = get_template('common/password_reset.html')
+                html_template = get_template('../../templates/common/password_reset.html')
                 context_data = {'email': user_email, "secret_token": secret_token, "server_url": server_url}
                 html_content = html_template.render(context_data)
                 send_mail(
@@ -101,17 +101,17 @@ def reset_password(request):
 
                 )
                 messages.info(request, "Please check your email for further instructions.")
-                return render(request, "accounts/password_reset.html")
+                return render(request, "../../templates/accounts/password_reset.html")
 
             except Exception as send_mail_exc:
                 print(send_mail_exc)
                 messages.error(request, 'Email sending failed.')
-                return render(request, "accounts/password_reset.html")
+                return render(request, "../../templates/accounts/password_reset.html")
 
         else:
             messages.error(request, "Please provide email address.")
-            return render(request, "accounts/password_reset.html")
-    return render(request, "accounts/password_reset.html")
+            return render(request, "../../templates/accounts/password_reset.html")
+    return render(request, "../../templates/accounts/password_reset.html")
 
 
 def change_password(request):
@@ -129,20 +129,20 @@ def change_password(request):
                 user.secret_token = secret_token
                 user.save()
                 messages.info(request, "Password Successfully Changed !")
-                return render(request, "accounts/password_change.html")
+                return render(request, "../../templates/accounts/password_change.html")
             else:
                 messages.error(request, "Cannot find an associated user.")
-                return render(request, "accounts/password_change.html")
-        return render(request, "accounts/password_change.html")
+                return render(request, "../../templates/accounts/password_change.html")
+        return render(request, "../../templates/accounts/password_change.html")
     else:
         request_params = request.GET
         email = request_params.get("email", None)
         secret_token = request_params.get("secret_token", None)
         if email and secret_token:
             context = {"email": email, "secret_token": secret_token}
-            return render(request, "accounts/password_change.html", context)
+            return render(request, "../../templates/accounts/password_change.html", context)
         else:
-            return render(request, "home/page-403.html")
+            return render(request, "../../templates/home/page-403.html")
 
 
 def email_confirmation(request):
@@ -164,16 +164,16 @@ def email_confirmation(request):
                 return redirect(reverse('login'))
             else:
                 messages.error(request, "Invalid Request")
-                return render(request, "home/page-403.html")
+                return render(request, "../../templates/home/page-403.html")
         else:
             messages.error(request, "Invalid Request")
-            return render(request, "home/page-403.html")
+            return render(request, "../../templates/home/page-403.html")
     else:
         request_params = request.GET
         email = request_params.get("email", None)
         secret_token = request_params.get("secret_token", None)
         if email and secret_token:
             context = {"email": email, "secret_token": secret_token}
-            return render(request, "accounts/auth-confirm-mail-2.html", context)
+            return render(request, "../../templates/accounts/auth-confirm-mail-2.html", context)
         else:
-            return render(request, "home/page-500.html")
+            return render(request, "../../templates/home/page-500.html")

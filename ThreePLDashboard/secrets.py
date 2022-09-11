@@ -1,11 +1,10 @@
-DATABASE = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        # 'NAME': 'premiere',
-        'NAME': 'grad_studio',
-        'USER': 'premiere_user',
-        'PASSWORD': 'premiere_pass',
-        'HOST': 'localhost',
+        'NAME': 'threepldashboard',
+        'USER': 'threepluser',
+        'PASSWORD': 'threeplpassword',
+        'HOST': '127.0.0.1',
         'PORT': '',
     }
 }
