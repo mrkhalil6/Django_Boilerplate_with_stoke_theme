@@ -6,6 +6,7 @@ from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from common.methods import random_key_generator
+from common.enum import get_user_type
 
 
 # default methods here
@@ -103,6 +104,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         Returns the short name for the user.
         '''
         return self.first_name
+
+    def get_user_type(self):
+        if self.type:
+            user_type = get_user_type(self.type)
+            return user_type
+        else:
+            return "None"
 
     def email_user(self):
         return self.email

@@ -6,20 +6,16 @@
                 <!-- LOGO -->
                 <div class="navbar-brand-box">
                     <a href=" #" class="logo logo-dark mt-4">
-                        {#                            <span class="logo-sm">#}
-                        {#                                <img src="{% static 'images/Logo_dark.svg' %}" alt="" height="22">#}
-                        {#                            </span>#}
+
                         <span class="logo-lg">
-                                <img src="{% static 'images/Logo_dark.svg' %}" alt="" height="15">
+                                <img src="{% static 'images/logo-dark.png' %}" alt="" height="35">
                             </span>
                     </a>
 
                     <a href=" #" class="logo logo-light  mt-4">
-                        {#                            <span class="logo-sm">#}
-                        {#                                <img src="{% static 'images/Logo_white.svg' %}" alt="" height="22">#}
-                        {#                            </span>#}
+
                         <span class="logo-lg">
-                                <img src="{% static 'images/Logo_white.svg' %}" alt="" height="15">
+                                <img src="{% static 'images/logo-light.png' %}" alt="" height="35">
                             </span>
                     </a>
                 </div>
@@ -65,72 +61,17 @@
                 <div class="dropdown d-inline-block">
                     <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img class="rounded-circle header-profile-user" src="{% static 'images/users/logo.png' %}"
+                        <img id='user_header_image'  class="rounded-circle header-profile-user" src="{% static 'images/profile-img.png' %}"
                              alt="Header Avatar" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                              aria-controls="offcanvasRight">
                         <span class="d-none d-xl-inline-block ms-1">{{ user.get_full_name }}</span>
                         <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                     </button>
-                    {% if is_supper_admin_logged_in %}
-                        <!-- right offcanvas -->
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
-                             aria-labelledby="offcanvasRightLabel">
-                            <div class="offcanvas-header align-items-center">
-                                <h5 id="offcanvasRightLabel">Institutions</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                                        aria-label="Close"></button>
 
-                            </div>
-                            <hr class="m-0"/>
-                            <div class="offcanvas-body">
-                                <p>Select an organization</p>
-                                <div class="search-box me-2">
-                                    <div class="position-relative">
-                                        <input type="text" id="organization_nameSearch" class="form-control border-0"
-                                               onkeyup="searchFunction()" placeholder="Search..."
-                                               style="background-color: #F3F3F9">
-                                        <i class="bx bx-search-alt search-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="d-flex pt-4 flex-column px-4">
-                                    <ol style=" list-style-type: none;" id="scrollableDiv">
-                                        {% for organization in organizations_listing_details %}
-                                            <li>
-                                            <a href="/accounts_listing?organization={{ organization.org_id }}&&organization_name={{ organization.name }}">
-
-                                                <div class="d-flex mt-3">
-                                                    <div class="avatar-xs me-3">
-                                            <span class="avatar-title bg-primary rounded-circle font-size-16">
-                                                {{ organization.name|slice:':1' }}
-                                            </span>
-                                                    </div>
-
-                                                    <span class="m-0"
-                                                          style="font-family: 'Poppins';font-size: 18px; font-weight: bold">
-                                            {{ organization.name }}
-                                        </span>
-
-                                                </div>
-                                            </a>
-</li>
-                                        {% endfor %}
-                                    </ol>
-
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
                     <div class="dropdown-menu dropdown-menu-end">
-                        <!-- item-->
-                        {#                            <a class="dropdown-item" href="#"><i class="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock Screen</span></a>#}
-                        {#                            <div class="dropdown-divider"></div>#}
-                        {% if user.is_authenticated %}
 
-                            {#                                {% if user.has_usable_password %}#}
-                            {#                                <a class="dropdown-item" href=" #"><i class="bx bx-key font-size-16 align-middle me-1"></i> Change Password</a>#}
-                            {#                                {% else %}#}
-                            {#                                <a class="dropdown-item" href=" #"><i class="bx bx-key font-size-16 align-middle me-1"></i> Set Password</a>#}
-                            {#                                {% endif %}#}
+                        {% if request.user.is_authenticated  %}
+
                             <a class="dropdown-item text-danger" href="{% url "logout" %}?next={% url 'login' %}"><i
                                     class="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i>Log Out</a>
                         {% else %}
@@ -153,21 +94,21 @@
 
 {% block extra_javascript %}
     <script>
-        function searchFunction() {
-            var input, filter, ol, li, a, i, txtValue;
-            input = document.getElementById('organization_nameSearch');
-            filter = input.value.toUpperCase();
-            ol = document.getElementById("scrollableDiv");
-            li = ol.getElementsByTagName("li");
-            for (i = 0; i < li.length; i++) {
-                a = li[i].getElementsByTagName("a")[0];
-                txtValue = a.textContent || a.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    li[i].style.display = "";
-                } else {
-                    li[i].style.display = "none";
-                }
-            }
-        }
+        {#function searchFunction() {#}
+        {#    var input, filter, ol, li, a, i, txtValue;#}
+        {#    input = document.getElementById('organization_nameSearch');#}
+        {#    filter = input.value.toUpperCase();#}
+        {#    ol = document.getElementById("scrollableDiv");#}
+        {#    li = ol.getElementsByTagName("li");#}
+        {#    for (i = 0; i < li.length; i++) {#}
+        {#        a = li[i].getElementsByTagName("a")[0];#}
+        {#        txtValue = a.textContent || a.innerText;#}
+        {#        if (txtValue.toUpperCase().indexOf(filter) > -1) {#}
+        {#            li[i].style.display = "";#}
+        {#        } else {#}
+        {#            li[i].style.display = "none";#}
+        {#        }#}
+        {#    }#}
+        {#}#}
     </script>
 {% endblock %}

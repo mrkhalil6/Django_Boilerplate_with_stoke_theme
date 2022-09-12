@@ -11,7 +11,7 @@ def get_user_status(status):
 
 
 def get_user_type(user_type):
-    user_type_dict = {'admin': 1, 'user': 2}
+    user_type_dict = {'Admin': 1, 'User': 2, 'Service Provider': 3}
     if type(user_type).__name__ == 'int':
         for key, value in user_type_dict.items():
             if value == user_type:
